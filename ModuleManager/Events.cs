@@ -10,6 +10,18 @@ namespace ModuleManager
     {
     }
 
+    public class DiggingCellEvent : Event
+    {
+        public int X;
+        public int Y;
+
+        public DiggingCellEvent(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+    }
+
     public class PlayerAnimationEvent : Event
     {
         public enum AnimationEvent
@@ -22,7 +34,9 @@ namespace ModuleManager
             FallLeft,
             FallRight,
             Stop,
-            Dead
+            Dead,
+            DigLeft,
+            DigRight
         }
 
         public PlayerAnimationEvent(AnimationEvent evt)

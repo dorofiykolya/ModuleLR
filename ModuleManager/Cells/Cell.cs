@@ -10,45 +10,27 @@ namespace ModuleManager
     {
         public CellType Type;
         public Point Point;
+        public bool IsHide;
 
         public Cell(Point point)
         {
             Point = point;
         }
-
-        public bool IsRemovable
-        {
-            get { return Type == CellType.Block; }
-        }
-
+        
         public bool IsEmpty
         {
             get { return Type == CellType.Empty; }
         }
 
-        public bool IsAvailableToMove
+        public bool IsBlock
         {
-            get
-            {
-                switch (Type)
-                {
-
-                    case CellType.Empty:
-                    case CellType.HLadr:
-                    case CellType.Ladder:
-                    case CellType.RopeBar:
-                    case CellType.Teleport:
-                        return true;
-                    case CellType.Trap:
-                    case CellType.Block:
-                    case CellType.Solid:
-                        return false;
-                }
-                return false;
-            }
+            get { return Type == CellType.Block; }
         }
 
-        public bool IsBlock { get { return Type == CellType.Block; } }
+        public bool IsNotHiddenBlock
+        {
+            get { return IsBlock && !IsHide; }
+        }
 
         public bool Any(params CellType[] types)
         {

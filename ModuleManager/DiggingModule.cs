@@ -52,8 +52,8 @@ namespace ModuleManager
                 case CharacterAction.DigLeft:
                     if (y < _cellModule.Bottom &&
                         x > 0 &&
-                        _cellModule.Get(x - 1, y + 1).IsBlock &&
-                        _cellModule.Get(x - 1, y).IsEmpty && 
+                        _cellModule.Get(x - 1, y + 1).IsNotHiddenBlock &&
+                        _cellModule.Get(x - 1, y).IsEmpty &&
                         !_coinModule.IsCoin(x - 1, y))
                     {
                         return true;
@@ -62,7 +62,7 @@ namespace ModuleManager
                 case CharacterAction.DigRight:
                     if (y < _cellModule.Bottom &&
                         x < _cellModule.Right &&
-                        _cellModule.Get(x + 1, y + 1).IsBlock &&
+                        _cellModule.Get(x + 1, y + 1).IsNotHiddenBlock &&
                         _cellModule.Get(x + 1, y).IsEmpty &&
                         !_coinModule.IsCoin(x + 1, y))
                     {

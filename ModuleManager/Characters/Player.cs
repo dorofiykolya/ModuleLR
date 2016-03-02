@@ -427,7 +427,136 @@ namespace ModuleManager
 
         public virtual void NextInput(Input input)
         {
-            
+            switch (input.Type)
+            {
+                case InputType.Move:
+                    InputMove(input.Action);
+                    break;
+                case InputType.Skill:
+                    break;
+            }
+        }
+
+        protected virtual void InputMove(InputAction action)
+        {
+            var moveStep = CharacterAction.Stop;
+            var stayCurrPos = true;
+            var keyAction = action;
+            Cell nextToken;
+            switch (keyAction)
+            {
+                case InputAction.MoveUp:
+                    stayCurrPos = Y <= 0 || (nextToken = _cellModule.Get(X, Y - 1)).IsNotHiddenBlock || nextToken.Any(CellType.Solid, CellType.Trap);
+
+                    if (Y > 0 &&
+                        _cellModule.Get(X, Y).Type != CellType.Ladder &&
+                        YOffset < _cellModule.H4 &&
+                        YOffset > 0 &&
+                        _cellModule.Get(X, Y + 1).Type == CellType.Ladder)
+                    {
+                        stayCurrPos = true;
+                        moveStep = CharacterAction.Up;
+                    }
+                    else if (!(_cellModule.Get(X, Y).Type != CellType.Ladder &&
+                              (YOffset <= 0 || _cellModule.Get(X, Y + 1).Type != CellType.Ladder) ||
+                              (YOffset <= 0 && stayCurrPos))
+                            )
+                    {
+                        moveStep = CharacterAction.Up;
+                    }
+
+                    break;
+                case InputAction.MoveDown:
+                    stayCurrPos = Y >= _cellModule.Bottom ||
+                                  (nextToken = _cellModule.Get(X, Y + 1)).IsNotHiddenBlock ||
+                                  nextToken.Type == CellType.Solid;
+
+                    if (!(YOffset >= 0 && stayCurrPos))
+                    {
+                        moveStep = CharacterAction.Down;
+                    }
+                    break;
+                case InputAction.MoveLeft:
+                    stayCurrPos = X <= 0 ||
+                                  (nextToken = _cellModule.Get(X - 1, Y)).IsNotHiddenBlock ||
+                                  nextToken.Any(CellType.Solid, CellType.Trap);
+
+                    if (!(XOffset <= 0 && stayCurrPos))
+                    {
+                        moveStep = CharacterAction.Left;
+                    }
+                    break;
+                case InputAction.MoveRight:
+                    stayCurrPos = X >= _cellModule.Right ||
+                                  (nextToken = _cellModule.Get(X + 1, Y)).IsNotHiddenBlock ||
+                                  nextToken.Any(CellType.Solid, CellType.Trap);
+
+                    if (!(XOffset >= 0 && stayCurrPos))
+                        moveStep = CharacterAction.Right;
+                    break;
+                case InputAction.DigLeft:
+                case InputAction.DigRight:
+                    CharacterAction characterAction;
+                    if(keyAction == InputAction.DigLeft) characterAction = CharacterAction.Left;
+                    else characterAction = CharacterAction.Right;
+                    
+                    if (_diggingModule.AvailableToDigg(characterAction))
+                    {
+                        MoveStep(characterAction, stayCurrPos);
+                        Digging(characterAction);
+                    }
+                    else
+                    {
+                        MoveStep(CharacterAction.Stop, stayCurrPos);
+                    }
+                    return;
+            }
+            MoveStep(moveStep, stayCurrPos);
+        }
+
+        protected virtual void Digging(CharacterAction action)
+        {
+            int x;
+            int y;
+            //string holeShape;
+
+            if (action == CharacterAction.DigLeft)
+            {
+                x = X - 1;
+                y = Y;
+
+                //_runner.shape = CubeAction.DigLeft;
+                //holeShape = "digHoleLeft";
+                _eventDispatcher.DispatchEvent(new PlayerAnimationEvent(PlayerAnimationEvent.AnimationEvent.DigLeft));
+            }
+            else
+            { //DIG RIGHT
+
+                x = X + 1;
+                y = Y;
+
+                //_runner.shape = CubeAction.DigRight;
+                //holeShape = "digHoleRight";
+                _eventDispatcher.DispatchEvent(new PlayerAnimationEvent(PlayerAnimationEvent.AnimationEvent.DigRight));
+            }
+
+            _soundModule.PlayDig();
+            _eventDispatcher.DispatchEvent(new DiggingCellEvent(x, y + 1));
+            //AI.Map[x, y + 1].HideBlock(); //hide block (replace with digging image)
+            //_runner.sprite.gotoAndPlay(_runner.shape);
+
+            /*var holeObj = AI.HoleObj;
+            holeObj.action = CubeAction.Digging;
+            holeObj.pos.Set(x, y);
+            holeObj.sprite.setTransform(x, y);
+            holeObj.StartDigging(AI.Map[x, y + 1]);
+            holeObj.DigEnd += digComplete;
+
+            //digTimeStart = recordCount; //for debug
+
+            holeObj.sprite.gotoAndPlay(_runner.shape);
+            holeObj.sprite.onComplete(digComplete);
+            holeObj.AddToScene();*/
         }
     }
 }

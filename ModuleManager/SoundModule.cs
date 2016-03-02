@@ -32,5 +32,10 @@ namespace ModuleManager
         {
             
         }
+
+        public void PlayDig()
+        {
+            
+        }
     }
 }
