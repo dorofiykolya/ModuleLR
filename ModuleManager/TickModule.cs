@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace ModuleManager
 {
-    class TickModule : Module
+    public class TickModule : ModuleManager
     {
         private ITick[] _ticks;
         private int _lastTime = 0;
+        private float _deltaTime;
 
         public override void Initialize()
         {
@@ -18,9 +19,14 @@ namespace ModuleManager
 
         public int Ticks { get; private set; }
 
-        public void Tick()
+        public virtual void Tick()
         {
-            Ticks++;
+            AdvanceTime();
+            AdvanceTick();
+        }
+
+        private void CalculateDeltaTime()
+        {
             float deltaTime = 0f;
             var time = Environment.TickCount;
             if (_lastTime == 0)
@@ -31,12 +37,24 @@ namespace ModuleManager
             {
                 deltaTime = (time - _lastTime) / 1000f;
             }
-
-            PreTick(deltaTime);
-            Tick(deltaTime);
-            PostTick(deltaTime);
-            FinalTick(deltaTime);
+            _deltaTime = deltaTime;
         }
+
+        protected virtual void AdvanceTime()
+        {
+            CalculateDeltaTime();
+        }
+
+        protected virtual void AdvanceTick()
+        {
+            Ticks++;
+            PreTick(_deltaTime);
+            Tick(_deltaTime);
+            PostTick(_deltaTime);
+            FinalTick(_deltaTime);
+        }
+
+        protected float DeltaTime { get { return _deltaTime; } }
 
         private void PreTick(float time)
         {

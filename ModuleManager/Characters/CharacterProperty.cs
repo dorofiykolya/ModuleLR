@@ -11,6 +11,8 @@ namespace ModuleManager
         None,
         Speed,
         Life,
-        DiggingSpeed
+        DiggingSpeed,
+        XMove,
+        YMove
     }
 }

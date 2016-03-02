@@ -6,34 +6,29 @@ using System.Threading.Tasks;
 
 namespace ModuleManager
 {
-    public class CoinModule : Module
+    public class SoundModule : Module
     {
         public override void Initialize()
         {
             
         }
 
-        public void Set(Point[] coins)
+        public void StopFall()
         {
             
         }
 
-        public bool IsCoin(int x, int y)
+        public void PlayDown()
         {
-            return false;
+            
         }
 
-        public bool IsEmpty
+        public void PlayFall()
         {
-            get { return false; }
+            
         }
 
-        public bool IsCompleted
-        {
-            get { return false; }
-        }
-
-        public void RemoveAt(int x, int y)
+        public void PlayGetGold()
         {
             
         }

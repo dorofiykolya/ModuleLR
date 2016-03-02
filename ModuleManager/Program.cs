@@ -14,9 +14,8 @@ namespace ModuleManager
 
         static void Main(string[] args)
         {
-            var module = new ModuleManager();
-
-            module.AddModule<TickModule>();
+            var module = new LevelModule();
+            module.AddModule<TimeModule>();
             module.AddModule<InputModule>();
             module.AddModule<PlayerModule>()
                 .SetPlayer<Player>()
@@ -33,7 +32,7 @@ namespace ModuleManager
                 .Add<SpeedUpSpell>()
                 .Add<SpeedDownSpell>()
                 .Add<DiggingSpell>();
-            
+
 
             module.Initialize();
 
@@ -43,7 +42,7 @@ namespace ModuleManager
                 {
                     lock (Sync)
                     {
-                        module.GetModule<TickModule>().Tick();
+                        module.Tick();
                     }
                     Thread.Sleep(100);
                 }
@@ -57,22 +56,22 @@ namespace ModuleManager
                     switch (key.Key)
                     {
                         case ConsoleKey.LeftArrow:
-                            module.GetModule<InputModule>().Input(new Input { Type = InputType.MoveLeft });
+                            module.GetModule<InputModule>().Input(new Input { Type = InputType.Move, Action = InputAction.MoveLeft });
                             break;
                         case ConsoleKey.RightArrow:
-                            module.GetModule<InputModule>().Input(new Input { Type = InputType.MoveRight });
+                            module.GetModule<InputModule>().Input(new Input { Type = InputType.Move, Action = InputAction.MoveRight });
                             break;
                         case ConsoleKey.UpArrow:
-                            module.GetModule<InputModule>().Input(new Input { Type = InputType.MoveUp });
+                            module.GetModule<InputModule>().Input(new Input { Type = InputType.Move, Action = InputAction.MoveUp });
                             break;
                         case ConsoleKey.DownArrow:
-                            module.GetModule<InputModule>().Input(new Input { Type = InputType.MoveDown });
+                            module.GetModule<InputModule>().Input(new Input { Type = InputType.Move, Action = InputAction.MoveDown });
                             break;
                         case ConsoleKey.Z:
-                            module.GetModule<InputModule>().Input(new Input { Type = InputType.DigLeft });
+                            module.GetModule<InputModule>().Input(new Input { Type = InputType.Move, Action = InputAction.DigLeft });
                             break;
                         case ConsoleKey.X:
-                            module.GetModule<InputModule>().Input(new Input { Type = InputType.DigRight });
+                            module.GetModule<InputModule>().Input(new Input { Type = InputType.Move, Action = InputAction.DigRight });
                             break;
                         case ConsoleKey.Escape:
                             var state = module.GetModule<StateModule>();

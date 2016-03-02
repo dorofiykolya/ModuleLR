@@ -6,22 +6,36 @@ using System.Threading.Tasks;
 
 namespace ModuleManager
 {
-    class InputModule : Module
+    public class InputModule : Module
     {
         private PlayerModule _playerModule;
+        private readonly Dictionary<InputType, Queue<Input>> _dictionary = new Dictionary<InputType, Queue<Input>>(); 
 
         public override void Initialize()
         {
             _playerModule = GetModule<PlayerModule>();
+            _dictionary[InputType.Move] = new Queue<Input>();
+            _dictionary[InputType.Skill] = new Queue<Input>();
+        }
+
+        public Input Dequeue(InputType type)
+        {
+            return _dictionary[type].Count != 0? _dictionary[type].Dequeue() : null;
         }
 
         public void Input(Input input)
         {
-            
+            _dictionary[input.Type].Enqueue(input);
         }
     }
 
-    enum InputType
+    public enum InputType
+    {
+        Move,
+        Skill
+    }
+
+    public enum InputAction
     {
         MoveLeft,
         MoveRight,
@@ -31,8 +45,10 @@ namespace ModuleManager
         DigRight
     }
 
-    class Input
+    public class Input
     {
         public InputType Type;
+        public InputAction Action;
+        public int SkillId;
     }
 }

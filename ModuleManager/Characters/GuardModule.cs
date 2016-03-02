@@ -43,5 +43,32 @@ namespace ModuleManager
         {
 
         }
+
+        public void Set(GuardRecord[] guards, Point[] guardRespawn, int guardRespawnTime)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Guard GetGuardAt(int x, int y)
+        {
+            foreach (var guard in GetModules<Guard>())
+            {
+                if (guard.X == x && guard.Y == y)
+                {
+                    return guard;
+                }
+            }
+            return null;
+        }
+
+        public bool IsGuardAt(int x, int y)
+        {
+            return GetGuardAt(x, y) != null;
+        }
+
+        public bool IsGuardAlive(int x, int y)
+        {
+            return IsGuardAt(x, y);
+        }
     }
 }

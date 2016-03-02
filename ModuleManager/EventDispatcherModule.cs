@@ -22,6 +22,11 @@ namespace ModuleManager
                 EVENT(evt);
             }
         }
+
+        public void DispatchEvent<T>() where T : Event
+        {
+            DispatchEvent(Event.Instantiate<T>());
+        }
     }
 
     public abstract class Event : IDisposable
